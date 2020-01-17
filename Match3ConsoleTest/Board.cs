@@ -1,8 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 
 namespace Match3ConsoleTest {
+    //Simple class to represent cells.
+    public class Cell {
+
+        public char CellColor { get; set; }
+        public bool MatchedVertically { get; set; }
+        public bool MatchedHorizontally { get; set; }
+
+    }
+
     public class Board
     {
         // We could have a more complex structure of 2D arrays, or a dictionary of arrays, etc.. but storing all cells in a single, flat structure is generally cleaner.
@@ -19,21 +27,13 @@ namespace Match3ConsoleTest {
         }
 
 
-        public char[] ColorChars = {
-            'B', 'G', 'R', 'Y'
-        };
-
         public void SetCellColor(char colorChar, Tuple<int, int> coordinates)
         {
-            if (!ColorChars.Contains(colorChar))
-            {
-                throw new ArgumentException($"The color character is not valid: {colorChar}\n\nValid range is: {ColorChars}");
-            }
 
             var (row, column) = coordinates;
             CellArray[GetIndexFromInts(row, column)] = new Cell
             {
-                CellColor = (Cell.ColorEnum) Array.IndexOf(ColorChars, colorChar)
+                CellColor = colorChar
             };
         }
 
@@ -43,6 +43,8 @@ namespace Match3ConsoleTest {
             return Width >= Height? row * Width + column : column * Height + row;
         }
 
+
+        //If the cell is part of a match, display the character. Otherwise, display an asterisk.
         public string BoardState()
         {
             var builder = new StringBuilder();
@@ -53,7 +55,7 @@ namespace Match3ConsoleTest {
                     builder.Append(
                         CellArray[GetIndexFromInts(i, j)].MatchedHorizontally ||
                         CellArray[GetIndexFromInts(i, j)].MatchedVertically
-                            ? ColorChars[(int) CellArray[GetIndexFromInts(i, j)].CellColor]
+                            ? CellArray[GetIndexFromInts(i, j)].CellColor
                             : '*');
                 }
 

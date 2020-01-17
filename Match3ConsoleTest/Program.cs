@@ -28,6 +28,7 @@ namespace Match3ConsoleTest {
 
                 //Making sure we don't have any gaps.
                 if (input != null && input.TrimEnd().Length != lineLength) {
+                    Console.WriteLine();
                     Console.WriteLine("The line length wasn't constant. Hit enter to quit.");
                     Console.ReadLine();
                     return;
@@ -36,7 +37,19 @@ namespace Match3ConsoleTest {
                 builder.AppendLine(input);
             }
             var matcher = new MatchFinder();
-            matcher.GetMatchesFromBoardState(builder.ToString().TrimEnd());
+
+            //The only exception we're throwing right now is an invalid color input.
+            try
+            {
+                matcher.GetMatchesFromBoardState(builder.ToString().TrimEnd());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An error occurred while trying to evaluate the submitted board state: {e.Message}. Quitting.");
+                Console.ReadLine();
+                return;
+            }
+
             Console.Write(matcher.BoardInstance.BoardState());
             Console.WriteLine("\nMatching complete! Hit any key to quit.");
             Console.ReadLine();
